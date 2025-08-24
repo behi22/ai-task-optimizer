@@ -29,7 +29,9 @@ app.get('/', (req, res) => {
 const Task = require('./models/Task');
 app.post('/optimize', async (req, res) => {
   try {
-    const tasks = await Task.find();
+    // Fetch only tasks that are not completed
+    const tasks = await Task.find({ status: { $ne: 'completed' } });
+
     const response = await axios.post('http://localhost:8000/optimize', tasks);
     res.json(response.data);
   } catch (error) {

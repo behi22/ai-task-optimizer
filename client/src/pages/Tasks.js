@@ -7,9 +7,12 @@ import {
   Input,
   DatePicker,
   InputNumber,
+  Select,
 } from 'antd';
 import api from '../api';
 import dayjs from 'dayjs';
+
+const { Option } = Select;
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -29,9 +32,15 @@ export default function Tasks() {
     await api.post('/tasks', {
       ...values,
       deadline: values.deadline.toISOString(),
+      status: 'pending', // default status
     });
     setIsModalOpen(false);
     form.resetFields();
+    fetchTasks();
+  };
+
+  const handleStatusChange = async (id, status) => {
+    await api.put(`/tasks/${id}`, { status });
     fetchTasks();
   };
 
@@ -44,7 +53,20 @@ export default function Tasks() {
       render: (d) => dayjs(d).format('YYYY-MM-DD'),
     },
     { title: 'Importance', dataIndex: 'importance' },
-    { title: 'Status', dataIndex: 'status' },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (status, record) => (
+        <Select
+          value={status}
+          onChange={(newStatus) => handleStatusChange(record._id, newStatus)}
+          style={{ width: 120 }}
+        >
+          <Option value="pending">Pending</Option>
+          <Option value="completed">Completed</Option>
+        </Select>
+      ),
+    },
   ];
 
   return (

@@ -1,24 +1,27 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
-import datetime
+from datetime import datetime, timezone
 
 app = FastAPI()
 
 class Task(BaseModel):
     title: str
     description: str
-    deadline: datetime.datetime
+    deadline: datetime
     importance: int
-    status: str
+    status: str = Field(default="pending")
 
 @app.post("/optimize")
 def optimize(tasks: List[Task]):
-    # Weighted priority: importance / days until deadline
-    today = datetime.datetime.now()
-    def score(t):
-        days_left = max((t.deadline - today).days, 1)
+    today = datetime.now(timezone.utc)
+
+    def score(t: Task):
+        t_deadline = t.deadline
+        if t_deadline.tzinfo is None:
+            t_deadline = t_deadline.replace(tzinfo=timezone.utc)
+        days_left = max((t_deadline - today).days, 1)
         return t.importance / days_left
 
-    optimized = sorted(tasks, key=lambda t: score(t), reverse=True)
-    return {"optimized": optimized}
+    optimized = sorted(tasks, key=score, reverse=True)
+    return {"optimized": [task.dict() for task in optimized]}
