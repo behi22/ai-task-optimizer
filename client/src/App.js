@@ -4,6 +4,7 @@ import { Layout, Menu } from 'antd';
 import Dashboard from './pages/Dashboard';
 import Tasks from './pages/Tasks';
 import Optimizer from './pages/Optimizer';
+import Footer from './components/Footer';
 
 const { Header, Content } = Layout;
 
@@ -36,6 +37,7 @@ function App() {
             <Route path="/optimizer" element={<Optimizer />} />
           </Routes>
         </Content>
+        <Footer />
       </Layout>
     </Router>
   );

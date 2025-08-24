@@ -18,6 +18,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -32,7 +33,7 @@ export default function Tasks() {
     await api.post('/tasks', {
       ...values,
       deadline: values.deadline.toISOString(),
-      status: 'pending', // default status
+      status: 'pending',
     });
     setIsModalOpen(false);
     form.resetFields();
@@ -42,6 +43,15 @@ export default function Tasks() {
   const handleStatusChange = async (id, status) => {
     await api.put(`/tasks/${id}`, { status });
     fetchTasks();
+  };
+
+  const handleSearch = async () => {
+    if (search.trim() === '') {
+      fetchTasks();
+    } else {
+      const res = await api.get(`/tasks/search?q=${search}`);
+      setTasks(res.data);
+    }
   };
 
   const columns = [
@@ -71,15 +81,21 @@ export default function Tasks() {
 
   return (
     <div>
-      <Button type="primary" onClick={() => setIsModalOpen(true)}>
+      {/* Search Bar */}
+      <Input.Search
+        placeholder="Search tasks by title or description"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onSearch={handleSearch}
+        enterButton
+        style={{ marginBottom: 20, width: 400 }}
+      />
+
+      <Button type="primary" onClick={() => setIsModalOpen(true)} style={{ marginBottom: 20 }}>
         Add Task
       </Button>
-      <Table
-        dataSource={tasks}
-        columns={columns}
-        rowKey="_id"
-        style={{ marginTop: 20 }}
-      />
+
+      <Table dataSource={tasks} columns={columns} rowKey="_id" />
 
       <Modal
         open={isModalOpen}
@@ -94,18 +110,10 @@ export default function Tasks() {
           <Form.Item name="description" label="Description">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="deadline"
-            label="Deadline"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="deadline" label="Deadline" rules={[{ required: true }]}>
             <DatePicker />
           </Form.Item>
-          <Form.Item
-            name="importance"
-            label="Importance (1–10)"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="importance" label="Importance (1–10)" rules={[{ required: true }]}>
             <InputNumber min={1} max={10} />
           </Form.Item>
         </Form>

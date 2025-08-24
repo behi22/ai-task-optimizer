@@ -7,10 +7,13 @@ app = FastAPI()
 
 class Task(BaseModel):
     title: str
-    description: str
+    description: str = ""
     deadline: datetime
     importance: int
     status: str = Field(default="pending")
+
+    class Config:
+        extra = "ignore"  # ignore _id, __v, createdAt, updatedAt
 
 @app.post("/optimize")
 def optimize(tasks: List[Task]):
