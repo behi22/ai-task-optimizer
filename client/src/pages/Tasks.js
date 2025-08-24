@@ -8,7 +8,7 @@ import {
   DatePicker,
   InputNumber,
 } from 'antd';
-import axios from 'axios';
+import api from '../api';
 import dayjs from 'dayjs';
 
 export default function Tasks() {
@@ -21,12 +21,12 @@ export default function Tasks() {
   }, []);
 
   const fetchTasks = async () => {
-    const res = await axios.get('http://localhost:5000/tasks');
+    const res = await api.get('/tasks');
     setTasks(res.data);
   };
 
   const handleAdd = async (values) => {
-    await axios.post('http://localhost:5000/tasks', {
+    await api.post('/tasks', {
       ...values,
       deadline: values.deadline.toISOString(),
     });

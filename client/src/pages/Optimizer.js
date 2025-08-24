@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { Button, List, Card } from 'antd';
-import axios from 'axios';
+import api from '../api';
 import dayjs from 'dayjs';
 
 export default function Optimizer() {
   const [optimized, setOptimized] = useState([]);
 
   const runOptimizer = async () => {
-    const res = await axios.post('http://localhost:5000/optimize');
-    setOptimized(res.data.optimized);
+    try {
+      const res = await api.post('/optimize');
+      setOptimized(res.data.optimized || []);
+    } catch (err) {
+      console.error('Optimizer failed:', err);
+    }
   };
 
   return (

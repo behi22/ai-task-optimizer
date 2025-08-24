@@ -1,21 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const axios = require('axios');
-
-// Load env variables from root .env
+const cors = require('cors');
 require('dotenv').config({ path: '../.env' });
 
 const app = express();
-
-// Middleware
 app.use(express.json());
 
-// Routes (for now, just a test)
+// CORS configuration
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
+
+// Import tasks route
+const tasksRoute = require('./routes/tasks');
+app.use('/tasks', tasksRoute);
+
+// Test route
 app.get('/', (req, res) => {
   res.send('Server is running and connected to MongoDB!');
 });
 
-// Optimize endpoint
+// Optimize endpoint (AI service)
+const Task = require('./models/Task');
 app.post('/optimize', async (req, res) => {
   try {
     const tasks = await Task.find();
@@ -27,7 +38,6 @@ app.post('/optimize', async (req, res) => {
   }
 });
 
-// Connect to MongoDB and start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

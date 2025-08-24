@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from 'antd';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
-import axios from 'axios';
+import api from '../api';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/tasks').then((res) => setTasks(res.data));
+    api.get('/tasks').then((res) => setTasks(res.data));
   }, []);
 
   const statusData = [
@@ -33,7 +33,6 @@ export default function Dashboard() {
           cx="50%"
           cy="50%"
           outerRadius={100}
-          fill="#8884d8"
           label
         >
           {statusData.map((entry, index) => (
