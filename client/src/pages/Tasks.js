@@ -95,7 +95,7 @@ export default function Tasks() {
         Add Task
       </Button>
 
-      <Table dataSource={tasks} columns={columns} rowKey="_id" />
+      <Table dataSource={tasks} columns={columns} rowKey="_id" pagination={{ pageSize: 5 }}/>
 
       <Modal
         open={isModalOpen}

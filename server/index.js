@@ -7,39 +7,56 @@ require('dotenv').config({ path: '../.env' });
 const app = express();
 app.use(express.json());
 
-// CORS configuration
 app.use(
   cors({
-    origin: 'http://localhost:3000', // frontend
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 );
 
-// Import tasks route
+// Import routes and models
 const tasksRoute = require('./routes/tasks');
+const Task = require('./models/Task');
+const OptimizationHistory = require('./models/OptimizationHistory');
+
 app.use('/tasks', tasksRoute);
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('Server is running and connected to MongoDB!');
-});
+app.get('/', (req, res) => res.send('Server running and connected to MongoDB!'));
 
-// Optimize endpoint (AI service)
-const Task = require('./models/Task');
+// Optimize endpoint
 app.post('/optimize', async (req, res) => {
   try {
-    // Fetch only tasks that are not completed
     const tasks = await Task.find({ status: { $ne: 'completed' } });
 
+    // Call AI optimizer service
     const response = await axios.post('http://localhost:8000/optimize', tasks);
-    res.json(response.data);
+
+    const optimizedData = response.data.optimized || [];
+
+    // Save result to DB
+    await OptimizationHistory.create({ tasks: optimizedData });
+
+    res.json({ optimized: optimizedData });
   } catch (error) {
     console.error(error);
     res.status(500).send('Optimizer service failed');
   }
 });
 
+// Fetch last optimizer result
+app.get('/optimize/last', async (req, res) => {
+  try {
+    const lastOpt = await OptimizationHistory.findOne().sort({ createdAt: -1 });
+    if (!lastOpt) return res.json({ optimized: [] });
+    res.json({ optimized: lastOpt.tasks });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to fetch last optimization');
+  }
+});
+
+// Connect to MongoDB and start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -48,6 +65,4 @@ mongoose
       console.log(`Server running on port ${process.env.PORT}`);
     });
   })
-  .catch((err) => {
-    console.error('MongoDB connection failed:', err.message);
-  });
+  .catch((err) => console.error('MongoDB connection failed:', err.message));
