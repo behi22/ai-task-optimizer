@@ -16,6 +16,9 @@ client/node_modules/
 
 # Python venv
 optimizer/venv/
+optimizer/__pycache__/
+*.pyc
+.env
 
 # Coverage reports
 coverage/
