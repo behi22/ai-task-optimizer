@@ -1,5 +1,30 @@
+# Node dependencies
 node_modules/
+
+# Logs and temp files
 *.log
 *.tmp
 .DS_Store
+
+# Build outputs
+build/
+dist/
+
+# React client build
+client/build/
+client/node_modules/
+
+# Python venv
+optimizer/venv/
+
+# Coverage reports
+coverage/
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Lock files (optional: keep if you want exact reproducibility)
 package-lock.json
+yarn.lock
