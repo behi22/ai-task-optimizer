@@ -14,6 +14,11 @@ class Task(BaseModel):
 
 @app.post("/optimize")
 def optimize(tasks: List[Task]):
-    # Simple algorithm: sort by importance desc, then by deadline asc
-    optimized = sorted(tasks, key=lambda t: (-t.importance, t.deadline))
+    # Weighted priority: importance / days until deadline
+    today = datetime.datetime.now()
+    def score(t):
+        days_left = max((t.deadline - today).days, 1)
+        return t.importance / days_left
+
+    optimized = sorted(tasks, key=lambda t: score(t), reverse=True)
     return {"optimized": optimized}
