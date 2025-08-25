@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, List, Form, Input, Button, DatePicker, InputNumber } from 'antd';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import api from '../api';
 import dayjs from 'dayjs';
 
@@ -37,7 +37,6 @@ export default function Dashboard() {
   const fetchLastOptimized = async () => {
     try {
       const res = await api.get('/optimize/last');
-      // Sort by importance descending and take top 3
       const top3 = (res.data.optimized || [])
         .sort((a, b) => b.importance - a.importance)
         .slice(0, 3);
@@ -78,19 +77,19 @@ export default function Dashboard() {
   return (
     <div>
       {/* Stats Row */}
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card>
+      <Row gutter={16} align="stretch">
+        <Col xs={24} md={8}>
+          <Card className="dashboard-card">
             <Statistic title="Total Tasks" value={tasks.length} />
           </Card>
         </Col>
-        <Col span={8}>
-          <Card>
+        <Col xs={24} md={8}>
+          <Card className="dashboard-card">
             <Statistic title="Pending" value={pendingTasks.length} />
           </Card>
         </Col>
-        <Col span={8}>
-          <Card>
+        <Col xs={24} md={8}>
+          <Card className="dashboard-card">
             <Statistic title="Overdue" value={overdueTasks.length} />
           </Card>
         </Col>
@@ -98,15 +97,15 @@ export default function Dashboard() {
 
       {/* Row: Last Optimizer Result (Top 3) */}
       {lastOptimized.length > 0 && (
-        <Row gutter={16} style={{ marginTop: 20 }}>
+        <Row gutter={16} style={{ marginTop: 20 }} align="stretch">
           <Col span={24}>
-            <Card title="Top 3 Prioritized Tasks (Last Optimization)">
+            <Card title="Top 3 Prioritized Tasks (Last Optimization)" className="dashboard-card">
               <List
-                grid={{ gutter: 16, column: 3 }}
+                grid={{ gutter: 16, xs: 1, sm: 1, md: 3 }}
                 dataSource={lastOptimized}
                 renderItem={(task) => (
                   <List.Item>
-                    <Card title={task.title}>
+                    <Card className="optimizer-task-card" title={task.title}>
                       <p>{task.description}</p>
                       <p><b>Deadline:</b> {dayjs(task.deadline).format('YYYY-MM-DD')}</p>
                       <p><b>Importance:</b> {task.importance}</p>
@@ -120,20 +119,24 @@ export default function Dashboard() {
       )}
 
       {/* Row: Task Status + Upcoming Deadlines */}
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={12}>
-          <Card title="Task Status">
-            <BarChart width={400} height={300} data={statusData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#1890ff" />
-            </BarChart>
+      <Row gutter={16} style={{ marginTop: 20 }} align="stretch">
+        <Col xs={24} md={12}>
+          <Card className="dashboard-card" title="Task Status">
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <BarChart data={statusData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value" fill="var(--accent)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </Card>
         </Col>
-        <Col span={12}>
-          <Card title="Upcoming Deadlines (by due date)">
+        <Col xs={24} md={12}>
+          <Card className="dashboard-card" title="Upcoming Deadlines (by due date)">
             <List
               dataSource={pendingTasks
                 .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
@@ -149,9 +152,9 @@ export default function Dashboard() {
       </Row>
 
       {/* Row: Last Added Tasks + Quick Add */}
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={12}>
-          <Card title="Last 5 Added Tasks">
+      <Row gutter={16} style={{ marginTop: 20 }} align="stretch">
+        <Col xs={24} md={12}>
+          <Card className="dashboard-card" title="Last 5 Added Tasks">
             <List
               dataSource={latestTasks}
               renderItem={(task) => (
@@ -162,20 +165,20 @@ export default function Dashboard() {
             />
           </Card>
         </Col>
-        <Col span={12}>
-          <Card title="Quick Add Task">
-            <Form form={form} onFinish={handleAdd} layout="inline">
+        <Col xs={24} md={12}>
+          <Card className="dashboard-card" title="Quick Add Task">
+            <Form form={form} onFinish={handleAdd} layout="vertical">
               <Form.Item name="title" rules={[{ required: true, message: 'Title required' }]}>
                 <Input placeholder="Title" />
               </Form.Item>
               <Form.Item name="deadline" rules={[{ required: true, message: 'Deadline required' }]}>
-                <DatePicker />
+                <DatePicker style={{ width: '100%' }} />
               </Form.Item>
               <Form.Item name="importance" rules={[{ required: true, message: 'Importance required' }]}>
-                <InputNumber min={1} max={10} placeholder="Importance" />
+                <InputNumber min={1} max={10} placeholder="Importance" style={{ width: '100%' }} />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit">Add</Button>
+                <Button type="primary" htmlType="submit" block>Add</Button>
               </Form.Item>
             </Form>
           </Card>

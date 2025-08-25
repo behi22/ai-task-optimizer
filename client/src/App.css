@@ -2,37 +2,195 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app-header {
+  background: var(--primary);
+  padding: 0;
+  height: auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.app-menu.ant-menu,
+.app-menu.ant-menu-horizontal {
+  background: var(--primary) !important;
+  border-bottom: none !important;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.app-menu.ant-menu-horizontal > .ant-menu-item::after,
+.app-menu.ant-menu-horizontal > .ant-menu-submenu::after {
+  border-bottom: none !important;
+}
+
+.app-menu .ant-menu-item {
+  border-radius: 12px !important;
+  text-align: center;
+  font-weight: 500;
+  background: transparent;
+  margin: 10px 8vw !important;
+}
+
+@media screen and (max-width: 600px) {
+  .app-menu .ant-menu-item {
+    margin: 10px 4vw !important;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-menu .ant-menu-item a {
+  color: var(--text-primary) !important;
+  border-radius: inherit;
+}
+
+.app-menu .ant-menu-item:hover {
+  background: var(--accent) !important;
+  color: var(--primary) !important;
+}
+
+.app-menu .ant-menu-item-selected {
+  background: var(--accent-secondary) !important;
+  color: var(--primary) !important;
+  font-weight: 600;
+}
+
+.ant-layout-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  padding: 20px;
+  background: #f5f5f5;
+  text-align: center;
+}
+
+.dashboard-card {
+  height: 100%;
+}
+
+.optimizer-task-card {
+  background: var(--primary) !important;
+  color: var(--text-primary) !important;
+  height: 100%;
+}
+
+.optimizer-task-card .ant-card-head-title {
+  color: var(--accent-secondary) !important;
+  font-weight: 600;
+}
+
+.optimizer-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.optimizer-button.ant-btn-primary {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--primary) !important;
+  font-weight: 600;
+}
+
+.optimizer-button.ant-btn-primary:not(:disabled):hover,
+.optimizer-button.ant-btn-primary:not(:disabled):focus {
+  background-color: var(--accent-secondary) !important;
+  border-color: var(--accent-secondary) !important;
+  color: var(--primary) !important;
+}
+
+.optimizer-list .ant-row {
+  align-items: stretch;
+}
+
+.optimizer-list .ant-col {
+  display: flex;
+}
+
+.optimizer-list-item {
+  display: flex;
+  width: 100%;
+}
+
+.optimizer-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 280px;
+  background: var(--primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.optimizer-card .ant-card-head-title {
+  color: var(--accent-secondary) !important;
+  font-weight: 600;
+}
+
+.tasks-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tasks-search {
+  width: 100%;
+  margin-bottom: 0;
+  height: 40px;
+}
+
+.tasks-add-btn {
+  width: 100%;
+  font-weight: 600;
+  height: 40px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.ant-select-item-option-active {
+  background-color: var(--accent) !important;
+  color: var(--primary) !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.ant-select-item-option-selected {
+  background-color: var(--accent-secondary) !important;
+  color: var(--primary) !important;
+}
+
+.tasks-table-card {
+  padding: 10px;
+  overflow-x: auto;
+}
+
+.ant-table {
+  width: 100%;
+}
+
+.ant-table-thead > tr > th {
+  background: var(--primary);
+  color: var(--text-primary);
+}
+
+.ant-table-tbody > tr > td {
+  background: #fff;
+}
+
+@media screen and (max-width: 768px) {
+  .tasks-search {
+    margin-bottom: 10px;
   }
-  to {
-    transform: rotate(360deg);
+  .tasks-add-btn {
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .ant-table-cell {
+    padding: 8px 6px;
   }
 }

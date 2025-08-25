@@ -28,12 +28,12 @@ export default function Optimizer() {
   const runOptimizer = async () => {
     try {
       setLoading(true);
-      const cleanedTasks = tasks.map(t => ({
+      const cleanedTasks = tasks.map((t) => ({
         title: t.title,
-        description: t.description || "",
+        description: t.description || '',
         deadline: t.deadline,
         importance: t.importance,
-        status: t.status
+        status: t.status,
       }));
 
       const res = await api.post('/optimize', cleanedTasks);
@@ -46,31 +46,44 @@ export default function Optimizer() {
   };
 
   return (
-    <div>
-      <Paragraph>
-        The optimizer calculates the priority of your pending tasks based on importance and urgency. 
-        Tasks closer to their deadline and higher in importance are ranked higher to help you focus 
+    <div className="optimizer-container">
+      <Paragraph style={{ maxWidth: 800, margin: '0 30px 30px 30px', textAlign: 'center', fontSize: 18 }}>
+        The optimizer calculates the priority of your pending tasks based on importance and urgency.
+        Tasks closer to their deadline and higher in importance are ranked higher to help you focus
         on what matters most.
       </Paragraph>
 
-      <Button type="primary" onClick={runOptimizer} loading={loading} style={{ marginBottom: 20 }}>
+      <Button
+        type="primary"
+        onClick={runOptimizer}
+        loading={loading}
+        className="optimizer-button"
+      >
         Run Optimizer
       </Button>
 
       {optimized.length === 0 ? (
-        <Paragraph>No optimization results yet.</Paragraph>
+        <Paragraph style={{ textAlign: 'center', marginTop: 20 }}>
+          No optimization results yet.
+        </Paragraph>
       ) : (
         <>
-          <Title level={4}>Last Optimization Results</Title>
+          <Title level={4} style={{ textAlign: 'center', marginTop: 30, marginBottom: 30 }}>
+            Last Optimization Results
+          </Title>
           <List
-            grid={{ gutter: 16, column: 2 }}
+            grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
             dataSource={optimized}
             renderItem={(task) => (
               <List.Item>
-                <Card title={task.title}>
+                <Card title={task.title} bordered className="optimizer-card">
                   <p>{task.description}</p>
-                  <p><b>Deadline:</b> {dayjs(task.deadline).format('YYYY-MM-DD')}</p>
-                  <p><b>Importance:</b> {task.importance}</p>
+                  <p>
+                    <b>Deadline:</b> {dayjs(task.deadline).format('YYYY-MM-DD')}
+                  </p>
+                  <p>
+                    <b>Importance:</b> {task.importance}
+                  </p>
                 </Card>
               </List.Item>
             )}
